@@ -61,11 +61,10 @@ def upload_ringback_tone_friend(request):
 			friend.ring_to_me = ringback_tone
 			friend.is_update = True
 			
-			user_profile = UserProfile.objects.get(user=user)
-			user_profile.is_update = True
-
-			user_profile.save()
 			friend.save()
+			update_friends = []
+			update_friends.append({'nickname':friend.friend.user_profile.nickname, 'phone_number':friend.friend.user_profile.phone_number, 'friend_id':friend.id, 'ring_to_me_url':friend.ring_to_me.ring_file.url, 'ring_to_me_title':friend.ring_to_me.title, 'ring_to_friend_url':friend.ring_to_friend.ring_file.url, 'ring_to_friend_title':friend.ring_to_friend.title, 'is_new':False})
+
 
 			try:
 				friend_friend = Friend.objects.get(user=friend.user, friend=user)
@@ -80,7 +79,7 @@ def upload_ringback_tone_friend(request):
 				pass
 			
 			# push friend
-			return render_json({'status':'success', 'response':''})
+			return render_json({'status':'success', 'response':update_friends})
 		else:
 			return HttpResponse('not login')
 	else:
