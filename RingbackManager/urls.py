@@ -19,6 +19,7 @@ urlpatterns = patterns('',
 
 
 	# Ringback Tone
+	(r'^ringback/tones/$', get_my_ringback_tone_list),
 	(r'^ringback/tone/upload/main/$', upload_ringback_tone_main),
 	(r'^ringback/tone/upload/friend/$', upload_ringback_tone_friend),
 	(r'^ringback/tone/change/friend/$', change_ringback_tone_friend),
