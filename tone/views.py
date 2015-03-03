@@ -8,6 +8,9 @@ from .models import RingbackTone
 from tone.models import *
 import json
 
+from gcm import GCM
+API_KEY = 'AIzaSyD1JQFF-mkZNzG7-BLJp1v5YMFV9BmTfR0'
+
 def file_upload(request):
 	user = User.objects.get(id=1)
 	ringbackTone = RingbackTone.objects.create(user=user, title=request.POST['title'], ring_file=request.FILES['file'], url='www.allo.phone')
@@ -120,7 +123,6 @@ def upload_ringback_tone_friend(request):
 			
 			friend = Friend.objects.get(id=friend_id)
 			friend.ring_to_me = ringback_tone
-			friend.is_update = True
 			
 			friend.save()
 			update_friends = []
@@ -132,12 +134,18 @@ def upload_ringback_tone_friend(request):
 			friend_friend.ring_to_friend = ringback_tone
 			friend_friend.is_update = True
 			
-			friend.user.user_profile.is_update = True
+			friend.friend.user_profile.is_update = True
 			
-			friend.user.user_profile.save()
+			friend.friend.user_profile.save()
 			friend_friend.save()
-		
 			# push friend
+
+			gcm = GCM(API_KEY)
+			data = {'nickname':friend.user.user_profile.nickname, 'title':friend.ring_to_me.title}
+			reg_id = friend.friend.user_profile.device_uuid
+			gcm.plaintext_request(registration_id=reg_id, data=data)
+
+
 			return render_json({'status':'success', 'response':update_friends})
 		else:
 			return HttpResponse('not login')

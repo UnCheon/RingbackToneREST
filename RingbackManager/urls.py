@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 	(r'^account/login/$', rb_login),
 	(r'^account/update/check/$', update_check),
 	(r'^account/sync/friends/$', sycn_friends),
+	(r'^account/all/friends/$', get_all_friends),
+
 
 
 	# Ringback Tone

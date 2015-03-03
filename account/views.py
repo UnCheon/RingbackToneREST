@@ -165,14 +165,13 @@ def update_check(request):
 	if request.method == "GET":
 		if request.user.is_authenticated():
 			user = request.user
-			user_profile = user.user_profile
+			user_profile = UserProfile.objects.get(user=user)
 
 			new_friends = []
 			if user_profile.is_update == True:
 				# when got new friend
 				friends_new = Friend.objects.filter(user=user, is_new=True)
 				for friend in friends_new:
-					# new_friends.append({'nickname':friend.friend.user_profile.nickname, 'phone_number':friend.friend.user_profile.phone_number, 'friend_id':friend.id, 'ring_to_me_url':friend.ring_to_me.url, 'ring_to_me_title':friend.ring_to_me.title, 'ring_to_friend_url':friend.ring_to_friend.url, 'ring_to_friend_title':friend.ring_to_friend.title, 'is_new':True})
 					new_friends.append({'nickname':friend.friend.user_profile.nickname, 'phone_number':friend.friend.user_profile.phone_number, 'friend_id':friend.id, 'ring_to_me_url':friend.ring_to_me.ring_file.url, 'ring_to_me_title':friend.ring_to_me.title, 'ring_to_friend_url':friend.ring_to_friend.ring_file.url, 'ring_to_friend_title':friend.ring_to_friend.title, 'is_new':True})
 				friends_new.update(is_new=False)
 				# when changed ring_to_friend
@@ -187,6 +186,24 @@ def update_check(request):
 			return HttpResponse('not login')
 	else:
 		return HttpResponse('get page')
+
+
+def get_all_friends(request):
+	if request.method == "GET":
+		if request.user.is_authenticated():
+			user = request.user
+			my_friends = []
+			friends = Friend.objects.filter(user=user)
+			for friend in friends:
+				my_friends.append({'nickname':friend.friend.user_profile.nickname, 'phone_number':friend.friend.user_profile.phone_number, 'friend_id':friend.id, 'ring_to_me_url':friend.ring_to_me.ring_file.url, 'ring_to_me_title':friend.ring_to_me.title, 'ring_to_friend_url':friend.ring_to_friend.ring_file.url, 'ring_to_friend_title':friend.ring_to_friend.title})
+			return render_json({'status':'success', 'response':my_friends})
+		else:
+			return HttpResponse('not login')
+	else:
+		return HttpResponse('not get access')
+
+
+
 
 '''
 def friends(request):

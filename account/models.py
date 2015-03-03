@@ -13,7 +13,7 @@ class UserProfile(models.Model):
 	user = models.OneToOneField(User, related_name='user_profile')
 	nickname = models.CharField(max_length='80')
 	phone_number = models.CharField(max_length='30', unique=True)
-	device_uuid = models.CharField(max_length='100', null=False, unique=True)
+	device_uuid = models.TextField()
 	device_type = models.CharField(max_length='80', null=False, unique=False)
 	ring_to_me = models.ForeignKey(RingbackTone, null=True, blank=True)
 	is_update = models.BooleanField(default=False)
